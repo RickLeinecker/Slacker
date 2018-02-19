@@ -50,6 +50,15 @@ void seekToStart(HANDLE h)
 	SetFilePointerEx(h, dest, &there, FILE_BEGIN);
 }
 
+int roundUp(int num)
+{
+	while ((num%bytesPerSect) != 0)
+	{
+		num++;
+	}
+	return(num);
+}
+
 void doWindowsEmbed()
 {
 	/* Open the device. */
@@ -77,7 +86,7 @@ void doWindowsEmbed()
 	/* Write the sector data. */
 	DWORD bytes;
 	/* A little detail is the the data written must be a multiple of the bytesPerSect */
-	if (!WriteFile(writeDevice, messageData, messageDataLength, &bytes, NULL))
+	if (!WriteFile(writeDevice, messageData, roundUp( messageDataLength ), &bytes, NULL))
 	{
 		CloseHandle(writeDevice);
 		char tmp[500];
